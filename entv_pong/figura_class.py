@@ -8,6 +8,9 @@ class Pelota:
         self.color = color
         self.vx = vx
         self.vy = vy
+        self.contadorDerecha = 0
+        self.contadorIzquierda = 0
+        self.font = pg.font.Font(None, 40)
 
     def dibujar(self,pantalla):
         pg.draw.circle(pantalla,self.color,(self.pos_x,self.pos_y),self.radio)
@@ -16,11 +19,64 @@ class Pelota:
         self.pos_x += self.vx
         self.pos_y += self.vy
         
-        if self.pos_x >= (x_max+self.radio*10) or self.pos_x < (0-self.radio*10):
+        if self.pos_x >= (x_max+self.radio*10): 
+            self.contadorIzquierda +=1
             self.vx *= -1
             self.vy *= -1
+            
+        
+        if self.pos_x < (0-self.radio*10):
+            self.contadorDerecha +=1
+            self.vx *= -1
+            self.vy *= -1
+            
+        
         if self.pos_y >= (y_max-self.radio) or self.pos_y < (0+self.radio):
             self.vy *= -1
+            
+    def marcador(self, pantalla_principal):
+        marcadorIzquierda = self.font.render(str( self.contadorDerecha),0, (255,255,0))
+        marcadorDerecha = self.font.render( str(self.contadorIzquierda),0, (255,255,0))
+        pantalla_principal.blit(marcadorDerecha, (200, 50))
+        pantalla_principal.blit(marcadorIzquierda, (600, 50 ))
+        
+    @property
+    def derecha(self):
+        return self.pos_x + self.radio
+    @property
+    def izquierda(self):
+        return self.pos_x - self.radio
+    @property
+    def arriba(self):
+        return self.pos_y - self.radio
+    @property
+    def abajo(self):
+        return self.pos_y + self.radio                
+
+    def comprobar_choque(self,r1,r2):
+        if self.derecha  >= r2.izquierda and \
+            self.izquierda  <= r2.derecha and \
+            self.abajo >= r2.arriba and\
+            self.arriba <= r2.abajo:
+            self.vx *= -1
+
+        if self.derecha  >= r1.izquierda and \
+            self.izquierda  <= r1.derecha and \
+            self.abajo >= r1.arriba and\
+            self.arriba <= r1.abajo:
+            self.vx *= -1
+
+    def comprobar_choqueV2(self,*raquetas):
+        for r in raquetas:
+            if self.derecha  >= r.izquierda and \
+               self.izquierda  <= r.derecha and \
+               self.abajo >= r.arriba and\
+               self.arriba <= r.abajo:
+                    self.vx *= -1
+                    break
+        
+    
+        
 
 class Raqueta:
     def __init__(self,pos_x,pos_y,w=20,h=100,color=(255,255,255),vx=1,vy=1):
@@ -41,4 +97,21 @@ class Raqueta:
         if estado_teclas[tecla_arriba] == True and self.pos_y > (y_min+self.h//2):
             self.pos_y -= 1
         if estado_teclas[tecla_abajo] == True and self.pos_y < (y_max-self.h//2):
-            self.pos_y += 1   
+            self.pos_y += 1 
+            
+    @property
+    def arriba(self):
+        return self.pos_y - self.h//2
+
+    @property
+    def abajo(self):
+        return self.pos_y + self.h//2
+    
+    @property
+    def izquierda(self):
+        return self.pos_x - self.w//2
+    
+    @property
+    def derecha(self):
+        return self.pos_x + self.w//2
+      
