@@ -24,8 +24,8 @@ pelota.vx=2
 game_over = False
 
 while not game_over:
-    print('gol raqueta 1:', pelota.contadorIzquierda)
-    print('gol raqueta 2:', pelota.contadorDerecha)
+    #print('gol raqueta 1:', pelota.contadorIzquierda)
+    #print('gol raqueta 2:', pelota.contadorDerecha)
     
     velocidad_tiempo = cronometro.tick(240)
     for evento in pg.event.get():

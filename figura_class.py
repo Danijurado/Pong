@@ -8,9 +8,7 @@ class Pelota:
         self.color = color
         self.vx = vx
         self.vy = vy
-        self.contadorDerecha = 0
-        self.contadorIzquierda = 0
-        self.font = pg.font.Font(None, 40)
+        self.font = pg.font.Font('fonts/PressStart2P.ttf', 15)
 
     def dibujar(self,pantalla):
         pg.draw.circle(pantalla,self.color,(self.pos_x,self.pos_y),self.radio)
@@ -19,27 +17,39 @@ class Pelota:
         self.pos_x += self.vx
         self.pos_y += self.vy
         
-        if self.pos_x >= (x_max+self.radio*10): 
-            self.contadorIzquierda +=1
+        if self.pos_y >= y_max-self.radio or self.pos_y < 0+self.radio:#para que rebote arriba y abajo
+            self.vy *= -1
+        
+        if self.pos_x >= (x_max+self.radio*10):
+            self.pos_x = x_max//2
+            self.pos_y = y_max//2
             self.vx *= -1
             self.vy *= -1
+
+            return "right" 
+            
             
         
         if self.pos_x < (0-self.radio*10):
-            self.contadorDerecha +=1
+            self.pos_x = x_max//2
+            self.pos_y = y_max//2
             self.vx *= -1
             self.vy *= -1
+
+            return "left"
             
-        
-        if self.pos_y >= (y_max-self.radio) or self.pos_y < (0+self.radio):
-            self.vy *= -1
             
+    '''''       
     def marcador(self, pantalla_principal):
-        marcadorIzquierda = self.font.render(str( self.contadorDerecha),0, (255,255,0))
+        marcadorIzquierda = self.font.render( str( self.contadorDerecha),0, (255,255,0))
         marcadorDerecha = self.font.render( str(self.contadorIzquierda),0, (255,255,0))
-        pantalla_principal.blit(marcadorDerecha, (200, 50))
-        pantalla_principal.blit(marcadorIzquierda, (600, 50 ))
-        
+        jugador1 = self.font.render('Player 1', 0, (255,255,0))
+        jugador2 = self.font.render('Player 2', 0, (255,255,0))
+        pantalla_principal.blit(jugador1, (150,50))
+        pantalla_principal.blit(jugador2, (550,50))
+        pantalla_principal.blit(marcadorDerecha, (200, 100))
+        pantalla_principal.blit(marcadorIzquierda, (600, 100 ))
+    '''    
     @property
     def derecha(self):
         return self.pos_x + self.radio
