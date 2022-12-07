@@ -1,10 +1,5 @@
-from pantallas import Partida, Menu #importar la clase Partida
+from sceneController import Controller
 
-menu = Menu()
-mensaje = menu.bucle_pantalla()
+inicio = Controller()
 
-if mensaje == 'jugar':
-    juego = Partida() #creamos objeto de la clase Partida
-    juego.bucle_pantalla() #llamamos al bucle de fotograma
-
-print(mensaje)
+inicio.start()
