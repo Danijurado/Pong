@@ -5,26 +5,30 @@ from utils import *
 
 
 class Partida:
-    def __init__(self):
+    def __init__(self,pantalla,refresco):
        
-        self.pantalla_principal = pg.display.set_mode((ANCHO,ALTO))
-        pg.display.set_caption('PONG')
-        self.tasa_refresco = pg.time.Clock()
+        self.pantalla_principal = pantalla
+        
+        self.tasa_refresco = refresco
         
         self.pelota = Pelota(ANCHO//2,ALTO//2,vx=2,vy=2)
+        
         self.raqueta1 = Raqueta(10, ALTO//2,vy=5)
-        self.raqueta2 = Raqueta(ANCHO-10,ALTO//2,vy=5)
+        self.raqueta1.direccion = 'izqda'
+        self.raqueta2 = Raqueta(ANCHO-20,ALTO//2,vy=5)
+        self.raqueta2.direccion = 'drcha'
+        
         self.marcador1 = 0
         self.marcador2 = 0
         self.font = pg.font.Font('fonts/pressStart2P.ttf', 15)
-        self.fuenteTemp = pg.font.Font('fonts/pressStart2P.ttf',30)
+        self.fuenteTemp = pg.font.Font('fonts/pressStart2P.ttf',40)
         self.quienMarco = ""
         self.temporizador = 15000 #en milisegundos
         self.colorFondo = VERDE  
         self.contadorFotograma = 0
         self.sonido = pg.mixer.Sound('songs/pelota.mp3')
     
-    def bucle_fotograma(self):
+    def bucle_pantalla(self):
         self.temporizador = 15000
         self.marcador1 = 0
         self.marcador2 = 0
@@ -126,18 +130,18 @@ class Partida:
     
     def resultado_final(self):
         if self.marcador1 > self.marcador2:
-            return f'Gana el jugador 2, Resutado Jugador 1: {self.marcador2} jugador 2: {self.marcador1}'
+            return f'Gana el jugador 2, Jugador 1: {self.marcador2} jugador 2: {self.marcador1}'
         elif self.marcador2 > self.marcador1:
-            return f'Gana el jugador 1, Resutado Jugador 1: {self.marcador2} jugador 2: {self.marcador1}'
+            return f'Gana el jugador 1, Jugador 1: {self.marcador2} jugador 2: {self.marcador1}'
         else:      
-            return f'Empate, resultado Jugador1: {self.marcador2} Jugador2: {self.marcador1}'
+            return f'Empate, Jugador1: {self.marcador2} Jugador2: {self.marcador1}'
 
 class Menu:
-    def __init__(self):
+    def __init__(self,pantalla,refresco):
        
-        self.pantalla_principal = pg.display.set_mode( (ANCHO,ALTO) )
-        pg.display.set_caption("MENU")
-        self.tasa_refresco = pg.time.Clock()
+        self.pantalla_principal = pantalla
+        
+        self.tasa_refresco = refresco
 
         self.imagenFondo = pg.image.load("images/portada.jpg")
         self.fuenteMenu = pg.font.Font("fonts/pressStart2P.ttf", 20)
@@ -156,9 +160,11 @@ class Menu:
 
                 if evento.type == pg.KEYDOWN:
                     if evento.key == pg.K_RETURN:
-                        game_over = True
+                        #game_over = True
+                        return 'jugar'
                     elif  evento.key == pg.K_r:
-                        game_over = True  
+                        #game_over = True
+                        return 'records'  
            
                 
                   
@@ -173,10 +179,10 @@ class Menu:
         
         pg.mixer.music.stop()    
 class Resultado:
-    def __init__(self):
-        self.pantalla_principal = pg.display.set_mode( (ANCHO,ALTO) )
-        pg.display.set_caption('RESULTADO')
-        self.tasa_refresco = pg.time.Clock()
+    def __init__(self,pantalla,refresco):
+        self.pantalla_principal = pantalla
+        
+        self.tasa_refresco = refresco
         self.fuenteResultado = pg.font.Font('fonts/pressStart2P.ttf', 15)
         self.resultado = ''
     
@@ -196,7 +202,7 @@ class Resultado:
                 
             self.pantalla_principal.fill(BLANCO)
             result = self.fuenteResultado.render(self.resultado,0,GRANATE) 
-            self.pantalla_principal.blit(result, (140, ALTO//2)) 
+            self.pantalla_principal.blit(result, (50, ALTO//2)) 
             pg.display.flip()
     
     def recibir_resultado(self, resultado):
@@ -204,10 +210,10 @@ class Resultado:
        
         
 class Records: 
-    def __init__(self):
-        self.pantalla_principal = pg.display.set_mode( (ANCHO,ALTO) )
-        pg.display.set_caption('RECORDS')
-        self.tasa_refresco = pg.time.Clock()
+    def __init__(self,pantalla,refresco):
+        self.pantalla_principal = pantalla
+        
+        self.tasa_refresco = refresco
         self.fuenteResultado = pg.font.Font('fonts/pressStart2P.ttf', 15)
     
     def bucle_pantalla(self):

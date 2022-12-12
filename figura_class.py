@@ -10,7 +10,8 @@ class Pelota:
         self.vx = vx
         self.vy = vy
         self.font = pg.font.Font('fonts/PressStart2P.ttf', 15)
-
+        self.sonido = pg.mixer.Sound('songs/pelota.mp3')
+    
     def dibujar(self,pantalla):
         pg.draw.circle(pantalla,self.color,(self.pos_x,self.pos_y),self.radio)
         
@@ -78,13 +79,17 @@ class Pelota:
             self.vx *= -1
 
     def comprobar_choqueV2(self,*raquetas):
+        
         for r in raquetas:
             if self.derecha  >= r.izquierda and \
                self.izquierda  <= r.derecha and \
                self.abajo >= r.arriba and\
                self.arriba <= r.abajo:
-                    self.vx *= -1
-                    break
+                self.sonido.play()
+                self.vx *= -1
+
+                break
+          
         
     
         
@@ -98,10 +103,55 @@ class Raqueta:
         self.color = color
         self.vx = vx
         self.vy = vy
-
-    def dibujar(self,pantalla):
-        pg.draw.rect(pantalla,self.color,(self.pos_x-(self.w//2),self.pos_y-(self.h//2),self.w,self.h))   
         
+        self.file_imagenes = {'izqda':['electric00_izqda.png','electric01_izqda.png','electric02_izqda.png'],
+                         'drcha':['electric00_drcha.png','electric01_drcha.png','electric02_drcha.png']}
+        
+        self.imagenes = self.cargar_imagenes() #llamo al metodo que me devuelve la inicializacion de imagenes
+        self._direccion = '' #variable para asignar direccion
+        self.imagen_activa = 0 #variable para indicar repeticion
+        
+        #self._imagen = None
+        
+    def cargar_imagenes(self):
+        imagenprueba={}
+        for lado in self.file_imagenes:
+            imagenprueba[lado]=[]
+            for nombre_fichero in self.file_imagenes[lado]:
+                fotos = pg.image.load( f"images/raquetas/{ nombre_fichero }" )
+                imagenprueba[lado].append(fotos)
+        
+        return imagenprueba
+        
+        
+        
+    @property
+    def direccion(self):
+        return self._direccion
+    
+    @direccion.setter
+    def direccion(self,valor):
+        self._direccion = valor
+    
+    #@property
+    #def imagen(self):
+        #return self._imagen
+    
+    #@imagen.setter
+    #def imagen(self, valor):
+        #self._imagen = pg.image.load(f'images/raquetas/{self.imagenes[valor]}')
+        
+    #def cambiar_imagen(self,parametro):
+        #self.raqueta = pg.image.load(f'images/raquetas/{self.imagenes[parametro]}')
+        
+    def dibujar(self,pantalla):
+        #pg.draw.rect(pantalla,self.color,(self.pos_x-(self.w//2),self.pos_y-(self.h//2),self.w,self.h))   
+        #pantalla.blit(self.imagen,(self.pos_x-(self.w//2),self.pos_y-(self.h//2),self.w,self.h) )
+        pantalla.blit(self.imagenes[self.direccion][self.imagen_activa],( self.pos_x-(self.w//2),self.pos_y-(self.h//2) , self.w, self.h ) )
+        self.imagen_activa += 1
+        if self.imagen_activa >= len(self.imagenes[self.direccion]) :
+            self.imagen_activa = 0
+    
     def mover(self, tecla_arriba, tecla_abajo, y_max=600, y_min=0):
         estado_teclas = pg.key.get_pressed()
 
